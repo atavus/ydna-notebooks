@@ -1,0 +1,1655 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 11.2' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     61179,       1647]
+NotebookOptionsPosition[     60609,       1627]
+NotebookOutlinePosition[     60967,       1643]
+CellTagsIndexPosition[     60924,       1640]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Y-DNA 67 Marker RCC Calculations v7a", "Title",
+ CellChangeTimes->{{3.727420669962903*^9, 3.727420704961995*^9}, {
+  3.727420827934626*^9, 3.727420869744821*^9}, {3.7274233940219107`*^9, 
+  3.7274234029655743`*^9}, {3.72810721896174*^9, 
+  3.728107220648871*^9}},ExpressionUUID->"206f3e38-a83d-48fe-987a-\
+c2ec82a15c4c"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[{
+ RowBox[{"Needs", "[", "\"\<HierarchicalClustering`\>\"", 
+  "]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+  "fileset", " ", "=", " ", "\"\<JOHNSTON - 67-Markers Data Set-v.7a\>\""}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"csvin", " ", "=", " ", 
+   RowBox[{
+   "\"\<git/ydna-notebooks/jupyter/\>\"", " ", "<>", " ", "fileset", " ", "<>",
+     " ", "\"\<.csv\>\""}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{"Delete", "[", 
+    RowBox[{
+     RowBox[{"Import", "[", 
+      RowBox[{"csvin", ",", "\"\<Data\>\""}], "]"}], ",", "1"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"data", " ", "=", " ", 
+   RowBox[{"Sort", "[", 
+    RowBox[{"data", ",", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"#1", "[", 
+        RowBox[{"[", "1", "]"}], "]"}], " ", "<", " ", 
+       RowBox[{"#2", "[", 
+        RowBox[{"[", "1", "]"}], "]"}]}], " ", "&"}]}], "]"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "sort", " ", "in", " ", "ascending", " ", "order", " ", "based", " ", "on",
+     " ", "kit", " ", "number"}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"labels", " ", "=", " ", 
+   RowBox[{"Table", "[", 
+    RowBox[{
+     RowBox[{
+      RowBox[{"ToString", "[", 
+       RowBox[{"d", "[", 
+        RowBox[{"[", "1", "]"}], "]"}], "]"}], " ", "<>", " ", "\"\< \>\"", 
+      " ", "<>", " ", 
+      RowBox[{"d", "[", 
+       RowBox[{"[", "2", "]"}], "]"}]}], ",", 
+     RowBox[{"{", 
+      RowBox[{"d", ",", "data"}], "}"}]}], "]"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+   "concatenate", " ", "kit", " ", "number", " ", "and", " ", "name", " ", 
+    "for", " ", "each", " ", "kit", " ", "into", " ", "a", " ", "list"}], " ",
+    "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"labels", " ", "=", " ", 
+   RowBox[{"Reverse", "[", 
+    RowBox[{"Table", "[", 
+     RowBox[{
+      RowBox[{"Rotate", "[", 
+       RowBox[{
+        RowBox[{"\"\<#\>\"", " ", "<>", " ", 
+         RowBox[{"ToString", "[", "i", "]"}], " ", "<>", " ", "\"\< \>\"", 
+         " ", "<>", " ", 
+         RowBox[{"labels", "[", 
+          RowBox[{"[", "i", "]"}], "]"}]}], ",", 
+        RowBox[{"3", 
+         RowBox[{"Pi", "/", "2"}]}]}], "]"}], ",", 
+      RowBox[{"{", 
+       RowBox[{"i", ",", 
+        RowBox[{"Length", "[", "labels", "]"}]}], "}"}]}], "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"tests", " ", "=", " ", 
+   RowBox[{"Reverse", "[", 
+    RowBox[{"data", "[", 
+     RowBox[{"[", 
+      RowBox[{"All", ",", 
+       RowBox[{"Range", "[", 
+        RowBox[{"3", ",", "69"}], "]"}]}], "]"}], "]"}], "]"}]}], ";", " ", 
+  RowBox[{"(*", " ", 
+   RowBox[{
+    RowBox[{"extract", " ", "the", " ", "Y"}], "-", 
+    RowBox[{
+    "STR", " ", "values", " ", "for", " ", "each", " ", "kit", " ", "into", 
+     " ", "a", " ", "2", "D", " ", "nested", " ", "list", " ", "with", " ", 
+     "rows", " ", "being", " ", "kits", " ", "and", " ", "columns", " ", 
+     "being", " ", "Y"}], "-", 
+    RowBox[{"STR", " ", "values"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+  RowBox[{"tree", " ", "=", " ", 
+   RowBox[{"ClusteringTree", "[", 
+    RowBox[{
+     RowBox[{"tests", "\[Rule]", "labels"}], ",", 
+     RowBox[{"ClusterDissimilarityFunction", "\[Rule]", "\"\<Average\>\""}], 
+     ",", 
+     RowBox[{"DistanceFunction", "\[Rule]", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{
+         RowBox[{"(", 
+          RowBox[{
+           RowBox[{"1", "/", 
+            RowBox[{"Correlation", "[", 
+             RowBox[{"#1", ",", "#2"}], "]"}]}], "-", "1"}], ")"}], "*", 
+         "10000"}], "&"}], ")"}]}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{"Rotate", "[", 
+  RowBox[{
+   RowBox[{"Dendrogram", "[", 
+    RowBox[{"tree", "\[IndentingNewLine]", ",", 
+     RowBox[{"Axes", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{"False", ",", "True"}], "}"}]}], "\[IndentingNewLine]", ",", 
+     " ", 
+     RowBox[{"ImageSize", "\[Rule]", "1200"}], "\[IndentingNewLine]", ",", 
+     " ", 
+     RowBox[{"GridLines", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{"None", ",", "Automatic"}], "}"}]}], "\[IndentingNewLine]", 
+     ",", " ", 
+     RowBox[{"Frame", "\[Rule]", 
+      RowBox[{"{", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"True", ",", "True"}], "}"}], ",", 
+        RowBox[{"{", 
+         RowBox[{"False", ",", "False"}], "}"}]}], "}"}]}], 
+     "\[IndentingNewLine]", ",", " ", 
+     RowBox[{"GridLinesStyle", " ", "\[Rule]", " ", "Green"}], 
+     "\[IndentingNewLine]", ",", " ", 
+     RowBox[{"FrameLabel", " ", "\[Rule]", " ", 
+      RowBox[{"{", 
+       RowBox[{"None", ",", 
+        RowBox[{"Rotate", "[", 
+         RowBox[{"\"\<RCC\>\"", ",", "Pi"}], "]"}]}], "}"}]}]}], 
+    "\[IndentingNewLine]", "]"}], ",", 
+   RowBox[{"Pi", "/", "2"}]}], "]"}], "\[IndentingNewLine]"}], "Input",
+ CellChangeTimes->{{3.728282532430602*^9, 3.728282544368636*^9}, 
+   3.728282626763693*^9, {3.728282816524063*^9, 3.728282825225225*^9}, 
+   3.728282883762518*^9, {3.728282927767582*^9, 3.7282829395891447`*^9}, {
+   3.72828300101068*^9, 3.728283003261812*^9}, {3.7282830461370907`*^9, 
+   3.72828304827907*^9}, {3.7282831420645933`*^9, 3.728283144951717*^9}, {
+   3.728283223157587*^9, 3.728283239268447*^9}, {3.728283291821911*^9, 
+   3.7282832953394127`*^9}, {3.7282833259589767`*^9, 3.728283326765647*^9}, {
+   3.728283509284623*^9, 3.728283516460492*^9}, {3.728283610774619*^9, 
+   3.72828363514816*^9}, {3.7282837975990467`*^9, 3.728283806579576*^9}, {
+   3.728283846449276*^9, 3.7282838492778873`*^9}, {3.728284830863915*^9, 
+   3.728284874847928*^9}, {3.728284975784892*^9, 3.728284995424389*^9}, {
+   3.7282850530084953`*^9, 3.728285067591877*^9}, {3.728285451691483*^9, 
+   3.728285512753521*^9}, {3.7282857741631823`*^9, 3.7282858493499193`*^9}, 
+   3.7282859007727213`*^9, {3.728286302844836*^9, 3.728286327964156*^9}, {
+   3.728286403162024*^9, 3.728286450430398*^9}, {3.728286486562127*^9, 
+   3.728286490934061*^9}, {3.7282865446452017`*^9, 3.728286644246894*^9}, {
+   3.728286683512941*^9, 3.728286708757402*^9}, {3.728286765106948*^9, 
+   3.728286765993596*^9}, {3.728286870751047*^9, 3.728286932268344*^9}, {
+   3.728287036664554*^9, 3.728287058679831*^9}, {3.728287196742447*^9, 
+   3.728287246994193*^9}, {3.728287671910759*^9, 3.728287698027041*^9}, {
+   3.728458614482071*^9, 
+   3.728458683327443*^9}},ExpressionUUID->"6057b372-a312-478f-8d55-\
+b68c6cd96809"],
+
+Cell[BoxData[
+ RotationBox[
+  GraphicsBox[{
+    {GrayLevel[0.65], 
+     LineBox[{{{4055.9866790771484`, 21.509029046049505`}, {
+       4055.9866790771484`, 22.197397367112302`}}, {{5253.7109375, 
+       20.801324230689083`}, {5253.7109375, 22.197397367112302`}}, {{
+       4055.9866790771484`, 22.197397367112302`}, {5253.7109375, 
+       22.197397367112302`}}, {{3745.973358154297, 19.875874113594566`}, {
+       3745.973358154297, 21.509029046049505`}}, {{4366., 
+       15.328139967683285`}, {4366., 21.509029046049505`}}, {{
+       3745.973358154297, 21.509029046049505`}, {4366., 
+       21.509029046049505`}}, {{3458.9467163085938`, 18.22438392165978}, {
+       3458.9467163085938`, 19.875874113594566`}}, {{4033., 
+       17.9490182162928}, {4033., 19.875874113594566`}}, {{
+       3458.9467163085938`, 19.875874113594566`}, {4033., 
+       19.875874113594566`}}, {{3106.8934326171875`, 15.039371611786692`}, {
+       3106.8934326171875`, 18.22438392165978}}, {{3811., 
+       10.99785423897437}, {3811., 18.22438392165978}}, {{3106.8934326171875`,
+        18.22438392165978}, {3811., 18.22438392165978}}, {{2758.911865234375, 
+       12.603670918090558`}, {2758.911865234375, 15.039371611786692`}}, {{
+       3454.875, 11.295266686732196`}, {3454.875, 15.039371611786692`}}, {{
+       2758.911865234375, 15.039371611786692`}, {3454.875, 
+       15.039371611786692`}}, {{2409.82373046875, 10.982646663657494`}, {
+       2409.82373046875, 
+       12.603670918090558`}}, {{3108, 0}, {3108., 12.603670918090558`}}, {{
+       2409.82373046875, 12.603670918090558`}, {3108., 
+       12.603670918090558`}}, {{1822.6474609375, 9.01163958909731}, {
+       1822.6474609375, 10.982646663657494`}}, {{2997., 8.739447436145742}, {
+       2997., 10.982646663657494`}}, {{1822.6474609375, 
+       10.982646663657494`}, {2997., 10.982646663657494`}}, {{1100.966796875, 
+       7.559397125377481}, {1100.966796875, 9.01163958909731}}, {{2544.328125,
+        7.660041155315495}, {2544.328125, 9.01163958909731}}, {{
+       1100.966796875, 9.01163958909731}, {2544.328125, 9.01163958909731}}, {{
+       698.23046875, 4.008403732400357}, {698.23046875, 
+       7.559397125377481}}, {{1503.703125, 6.56984808340498}, {1503.703125, 
+       7.559397125377481}}, {{698.23046875, 7.559397125377481}, {1503.703125, 
+       7.559397125377481}}, {{563.9609375, 3.1879230424314287`}, {563.9609375,
+        4.008403732400357}}, {{832.5, 1.4977644222713415`}, {832.5, 
+       4.008403732400357}}, {{563.9609375, 4.008403732400357}, {832.5, 
+       4.008403732400357}}, {{461.921875, 2.468408211401263}, {461.921875, 
+       3.1879230424314287`}}, {{666, 0}, {666., 3.1879230424314287`}}, {{
+       461.921875, 3.1879230424314287`}, {666., 3.1879230424314287`}}, {{
+       331.84375, 1.5874444830132894`}, {331.84375, 
+       2.468408211401263}}, {{592, 0}, {592., 2.468408211401263}}, {{
+       331.84375, 2.468408211401263}, {592., 2.468408211401263}}, {{145.6875, 
+       0.}, {145.6875, 
+       1.5874444830132894`}}, {{518, 0}, {518., 1.5874444830132894`}}, {{
+       145.6875, 1.5874444830132894`}, {518., 
+       1.5874444830132894`}}, {{74, 0}, {74., 0.}}, {{217.375, 0.}, {217.375, 
+       0.}}, {{74., 0.}, {217.375, 0.}}, {{148, 0}, {148., 0.}}, {{286.75, 
+       0.}, {286.75, 0.}}, {{148., 0.}, {286.75, 
+       0.}}, {{222, 0}, {222., 0.}}, {{351.5, 0.}, {351.5, 0.}}, {{222., 
+       0.}, {351.5, 0.}}, {{296, 0}, {296., 0.}}, {{407., 0.}, {407., 0.}}, {{
+       296., 0.}, {407., 
+       0.}}, {{370, 0}, {370., 0.}}, {{444, 0}, {444., 0.}}, {{370., 0.}, {
+       444., 0.}}, {{777., 0.}, {777., 
+       1.4977644222713415`}}, {{888, 0}, {888., 1.4977644222713415`}}, {{777.,
+        1.4977644222713415`}, {888., 
+       1.4977644222713415`}}, {{740, 0}, {740., 0.}}, {{814, 0}, {814., 
+        0.}}, {{740., 0.}, {814., 0.}}, {{1231.40625, 5.515460306396436}, {
+       1231.40625, 
+       6.56984808340498}}, {{1776, 0}, {1776., 6.56984808340498}}, {{
+       1231.40625, 6.56984808340498}, {1776., 6.56984808340498}}, {{999., 
+       3.7175238137576727`}, {999., 5.515460306396436}}, {{1463.8125, 
+       4.207046037830314}, {1463.8125, 5.515460306396436}}, {{999., 
+       5.515460306396436}, {1463.8125, 
+       5.515460306396436}}, {{962, 0}, {962., 3.7175238137576727`}}, {{1036, 
+        0}, {1036., 3.7175238137576727`}}, {{962., 3.7175238137576727`}, {
+       1036., 3.7175238137576727`}}, {{1290.375, 3.506491050240812}, {
+       1290.375, 4.207046037830314}}, {{1637.25, 2.56495994041539}, {1637.25, 
+       4.207046037830314}}, {{1290.375, 4.207046037830314}, {1637.25, 
+       4.207046037830314}}, {{1174.75, 2.536503813680424}, {1174.75, 
+       3.506491050240812}}, {{1406, 0}, {1406., 3.506491050240812}}, {{
+       1174.75, 3.506491050240812}, {1406., 
+       3.506491050240812}}, {{1110, 0}, {1110., 2.536503813680424}}, {{1239.5,
+        1.418065258531609}, {1239.5, 2.536503813680424}}, {{1110., 
+       2.536503813680424}, {1239.5, 
+       2.536503813680424}}, {{1184, 0}, {1184., 1.418065258531609}}, {{1295., 
+       0.}, {1295., 1.418065258531609}}, {{1184., 1.418065258531609}, {1295., 
+       1.418065258531609}}, {{1258, 0}, {1258., 0.}}, {{1332, 0}, {1332., 
+        0.}}, {{1258., 0.}, {1332., 0.}}, {{1572.5, 1.4722073194950447`}, {
+       1572.5, 2.56495994041539}}, {{1702, 0}, {1702., 2.56495994041539}}, {{
+       1572.5, 2.56495994041539}, {1702., 2.56495994041539}}, {{1517., 0.}, {
+       1517., 1.4722073194950447`}}, {{1628, 0}, {1628., 
+        1.4722073194950447`}}, {{1517., 1.4722073194950447`}, {1628., 
+       1.4722073194950447`}}, {{1480, 0}, {1480., 0.}}, {{1554, 0}, {1554., 
+        0.}}, {{1480., 0.}, {1554., 0.}}, {{2359.90625, 5.795397180808488}, {
+       2359.90625, 7.660041155315495}}, {{2728.75, 5.967515833980308}, {
+       2728.75, 7.660041155315495}}, {{2359.90625, 7.660041155315495}, {
+       2728.75, 7.660041155315495}}, {{2203.8125, 4.494613158822352}, {
+       2203.8125, 
+       5.795397180808488}}, {{2516, 0}, {2516., 5.795397180808488}}, {{
+       2203.8125, 5.795397180808488}, {2516., 5.795397180808488}}, {{2076.625,
+        3.129721065161517}, {2076.625, 4.494613158822352}}, {{2331., 
+       2.7951809474202616`}, {2331., 4.494613158822352}}, {{2076.625, 
+       4.494613158822352}, {2331., 4.494613158822352}}, {{2007.25, 
+       2.5437655679638738`}, {2007.25, 
+       3.129721065161517}}, {{2146, 0}, {2146., 3.129721065161517}}, {{
+       2007.25, 3.129721065161517}, {2146., 3.129721065161517}}, {{1942.5, 
+       1.4872797966059004`}, {1942.5, 
+       2.5437655679638738`}}, {{2072, 0}, {2072., 2.5437655679638738`}}, {{
+       1942.5, 2.5437655679638738`}, {2072., 2.5437655679638738`}}, {{1887., 
+       0.}, {1887., 
+       1.4872797966059004`}}, {{1998, 0}, {1998., 1.4872797966059004`}}, {{
+       1887., 1.4872797966059004`}, {1998., 
+       1.4872797966059004`}}, {{1850, 0}, {1850., 0.}}, {{1924, 0}, {1924., 
+        0.}}, {{1850., 0.}, {1924., 0.}}, {{2257., 1.807670483406909}, {2257.,
+        2.7951809474202616`}}, {{2405., 1.8084276503027574`}, {2405., 
+       2.7951809474202616`}}, {{2257., 2.7951809474202616`}, {2405., 
+       2.7951809474202616`}}, {{2220, 0}, {2220., 1.807670483406909}}, {{2294,
+         0}, {2294., 1.807670483406909}}, {{2220., 1.807670483406909}, {2294.,
+        1.807670483406909}}, {{2368, 0}, {2368., 1.8084276503027574`}}, {{
+        2442, 0}, {2442., 1.8084276503027574`}}, {{2368., 
+       1.8084276503027574`}, {2442., 1.8084276503027574`}}, {{2627., 
+       3.670371292490149}, {2627., 5.967515833980308}}, {{2830.5, 
+       4.584387759932751}, {2830.5, 5.967515833980308}}, {{2627., 
+       5.967515833980308}, {2830.5, 
+       5.967515833980308}}, {{2590, 0}, {2590., 3.670371292490149}}, {{2664, 
+        0}, {2664., 3.670371292490149}}, {{2590., 3.670371292490149}, {2664., 
+       3.670371292490149}}, {{2775., 2.7839459772560637`}, {2775., 
+       4.584387759932751}}, {{2886, 0}, {2886., 4.584387759932751}}, {{2775., 
+       4.584387759932751}, {2886., 
+       4.584387759932751}}, {{2738, 0}, {2738., 2.7839459772560637`}}, {{2812,
+         0}, {2812., 2.7839459772560637`}}, {{2738., 2.7839459772560637`}, {
+       2812., 2.7839459772560637`}}, {{2960, 0}, {2960., 
+        8.739447436145742}}, {{3034, 0}, {3034., 8.739447436145742}}, {{2960.,
+        8.739447436145742}, {3034., 8.739447436145742}}, {{3320.75, 
+       3.194073147598786}, {3320.75, 11.295266686732196`}}, {{3589., 
+       5.824037347422761}, {3589., 11.295266686732196`}}, {{3320.75, 
+       11.295266686732196`}, {3589., 11.295266686732196`}}, {{3237.5, 0.}, {
+       3237.5, 
+       3.194073147598786}}, {{3404, 0}, {3404., 3.194073147598786}}, {{3237.5,
+        3.194073147598786}, {3404., 
+       3.194073147598786}}, {{3182, 0}, {3182., 0.}}, {{3293., 0.}, {3293., 
+       0.}}, {{3182., 0.}, {3293., 
+       0.}}, {{3256, 0}, {3256., 0.}}, {{3330, 0}, {3330., 0.}}, {{3256., 
+       0.}, {3330., 0.}}, {{3515., 1.8460034900291689`}, {3515., 
+       5.824037347422761}}, {{3663., 3.2084403745047396`}, {3663., 
+       5.824037347422761}}, {{3515., 5.824037347422761}, {3663., 
+       5.824037347422761}}, {{3478, 0}, {3478., 1.8460034900291689`}}, {{3552,
+         0}, {3552., 1.8460034900291689`}}, {{3478., 1.8460034900291689`}, {
+       3552., 1.8460034900291689`}}, {{3626, 0}, {3626., 
+        3.2084403745047396`}}, {{3700, 0}, {3700., 3.2084403745047396`}}, {{
+       3626., 3.2084403745047396`}, {3700., 
+       3.2084403745047396`}}, {{3774, 0}, {3774., 10.99785423897437}}, {{3848,
+         0}, {3848., 10.99785423897437}}, {{3774., 10.99785423897437}, {3848.,
+        10.99785423897437}}, {{3959., 8.034554319753529}, {3959., 
+       17.9490182162928}}, {{4107., 11.24163971014891}, {4107., 
+       17.9490182162928}}, {{3959., 17.9490182162928}, {4107., 
+       17.9490182162928}}, {{3922, 0}, {3922., 8.034554319753529}}, {{3996, 
+        0}, {3996., 8.034554319753529}}, {{3922., 8.034554319753529}, {3996., 
+       8.034554319753529}}, {{4070, 0}, {4070., 11.24163971014891}}, {{4144, 
+        0}, {4144., 11.24163971014891}}, {{4070., 11.24163971014891}, {4144., 
+       11.24163971014891}}, {{4255., 10.16609598604612}, {4255., 
+       15.328139967683285`}}, {{4477., 13.653471496073433`}, {4477., 
+       15.328139967683285`}}, {{4255., 15.328139967683285`}, {4477., 
+       15.328139967683285`}}, {{4218, 0}, {4218., 10.16609598604612}}, {{4292,
+         0}, {4292., 10.16609598604612}}, {{4218., 10.16609598604612}, {4292.,
+        10.16609598604612}}, {{4403., 0.}, {4403., 13.653471496073433`}}, {{
+       4551., 7.570104653331633}, {4551., 13.653471496073433`}}, {{4403., 
+       13.653471496073433`}, {4551., 
+       13.653471496073433`}}, {{4366, 0}, {4366., 0.}}, {{4440, 0}, {4440., 
+        0.}}, {{4366., 0.}, {4440., 
+       0.}}, {{4514, 0}, {4514., 7.570104653331633}}, {{4588, 0}, {4588., 
+        7.570104653331633}}, {{4514., 7.570104653331633}, {4588., 
+       7.570104653331633}}, {{5068.421875, 16.42051249206203}, {5068.421875, 
+       20.801324230689083`}}, {{5439., 11.988326790630666`}, {5439., 
+       20.801324230689083`}}, {{5068.421875, 20.801324230689083`}, {5439., 
+       20.801324230689083`}}, {{4845.84375, 7.579907974118727}, {4845.84375, 
+       16.42051249206203}}, {{5291., 0.}, {5291., 16.42051249206203}}, {{
+       4845.84375, 16.42051249206203}, {5291., 
+       16.42051249206203}}, {{4662, 0}, {4662., 7.579907974118727}}, {{
+       5029.6875, 5.47990934432363}, {5029.6875, 7.579907974118727}}, {{4662.,
+        7.579907974118727}, {5029.6875, 7.579907974118727}}, {{4916.375, 
+       2.816243463785728}, {4916.375, 5.47990934432363}}, {{5143., 
+       1.8056458737891745`}, {5143., 5.47990934432363}}, {{4916.375, 
+       5.47990934432363}, {5143., 5.47990934432363}}, {{4800.75, 
+       1.8516850742300583`}, {4800.75, 
+       2.816243463785728}}, {{5032, 0}, {5032., 2.816243463785728}}, {{
+       4800.75, 2.816243463785728}, {5032., 
+       2.816243463785728}}, {{4736, 0}, {4736., 1.8516850742300583`}}, {{
+       4865.5, 0.}, {4865.5, 1.8516850742300583`}}, {{4736., 
+       1.8516850742300583`}, {4865.5, 
+       1.8516850742300583`}}, {{4810, 0}, {4810., 0.}}, {{4921., 0.}, {4921., 
+       0.}}, {{4810., 0.}, {4921., 
+       0.}}, {{4884, 0}, {4884., 0.}}, {{4958, 0}, {4958., 0.}}, {{4884., 
+       0.}, {4958., 
+       0.}}, {{5106, 0}, {5106., 1.8056458737891745`}}, {{5180, 0}, {5180., 
+        1.8056458737891745`}}, {{5106., 1.8056458737891745`}, {5180., 
+       1.8056458737891745`}}, {{5254, 0}, {5254., 0.}}, {{5328, 0}, {5328., 
+        0.}}, {{5254., 0.}, {5328., 
+       0.}}, {{5402, 0}, {5402., 11.988326790630666`}}, {{5476, 0}, {5476., 
+        11.988326790630666`}}, {{5402., 11.988326790630666`}, {5476., 
+       11.988326790630666`}}}]}, InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#74 295445 Johnson,X.11\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {74, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#73 231486 Johnson,X.10\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {148, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#72 149075 Bengsch,X.1\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {222, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#11 117602 Johnston,W.B.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {296, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#9 78450 Johnston,L.A.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {370, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#4 35020 Johnston,C.A.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {444, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#56 507853 Bell,C.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {518, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#53 42921 Johnston,R.J.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {592, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#14 123274 Johnston,Don.K.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {666, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#54 143129 Johnston,L.K.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {740, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#52 N57652 Johnston,Dav.K.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {814, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#35 304497 Johnston,R.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {888, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#51 384241 Johnston,C.H.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {962, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#23 203465 Noble,R.C.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1036, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#50 339805 Johnston,J.B.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1110, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#48 314479 Johnson,L.D.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1184, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#47 284969 Johnston,K.A.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1258, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#42 15823 Johnston,G.E.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1332, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#46 194257 Johnston,X.5\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1406, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#45 164657 Johnston,R.J.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1480, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#43 18237 Johnston,R.W.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1554, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#39 449686 Johnston,K.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1628, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#38 399174 Mowen,R.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1702, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#44 142194 Johnson,B.W.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1776, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#70 B102338 Johnston,Jr.,W.M.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1850, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#30 287180 Johnston,Wn.Js.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1924, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#37 366843 OBrien,X.1\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {1998, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#32 294700 Johnstone,X.4\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2072, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#12 119165 Johnston,P.S.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2146, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#69 1323297 Johnson,X.9\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2220, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#16 138336 Jacobs,T.B.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2294, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#40 518763 Johnston,R.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2368, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#27 272658 Johnston,X.3\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2442, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#65 17795 Johnstone,J.M.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2516, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#64 N20763 Johnston,O.R.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2590, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#49 330266 Johnston,K.W.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2664, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#28 276825 Johnston,S.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2738, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#41 N1821 Johnston,J.D.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2812, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#25 232358 Johnston, Wm.Jn.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2886, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#29 278541 Chambers,X.1\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {2960, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#15 137514 Johnson,X.1\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3034, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#31 288091 Johnson,W.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3108, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#1 19048 Johnston,C.VI \"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3182, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#8 49155 Johnston,C.VII\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3256, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#6 40855 Johnston,D.F.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3330, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#7 40856 Johnston,E.D.L.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3404, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#2 20045 Johnston,R.E.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3478, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#21 168706 Johnston,W. \"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3552, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#22 199448 Taylor,W.T.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3626, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#33 295419 Taylor,D.C.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3700, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#20 156392 Johnson,A.M.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3774, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#36 357558 Johnston,X.2\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3848, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#71 57530 Johnston,F.M.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3922, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#13 120079 Johnston, J.D.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {3996, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#66 223139 Johnston,L.K.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4070, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#10 113471 Johnstone,R.L.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4144, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#5 35845 Braun,J.P.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4218, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#19 143430 Johnston,W.W.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4292, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#55 472774 Schlesier,R.G.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4366, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#26 244137 Schlesier,R.A. \"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4440, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#67 591027 Anderson,L.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4514, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#24 228397 Shaw,B.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4588, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#57 N24016 Johnston,X.7\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4662, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#68 726267 Johnson,L.R.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4736, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#63 274527 Johnson,B.V.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4810, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#62 201056 Johnson,J.B.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4884, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#60 158248 Johnson,J.B.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {4958, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#58 66814 Johnson.X.8\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {5032, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#61 201056 Johnson,D.W.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {5106, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#59 149633 Johnson,R.L.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {5180, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#17 139556 Johnson,X.6\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {5254, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#18 139566 Johnson,V.A.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {5328, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#34 301871 Johnson,J.T.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {5402, 0}, Scaled[{0.5, 1}]], InsetBox[
+     FrameBox[
+      TagBox[
+       FrameBox[
+        RotationBox["\<\"#3 21175 Noble,W.R.\"\>",
+         BoxRotation->4.71238898038469],
+        Background->GrayLevel[1],
+        FrameMargins->{{0, 0}, {0, 0}},
+        FrameStyle->GrayLevel[1],
+        RoundingRadius->2,
+        StripOnInput->False],
+       Short],
+      Background->GrayLevel[1],
+      FrameMargins->{{0, 0}, {0, 0}},
+      FrameStyle->GrayLevel[1],
+      RoundingRadius->2,
+      StripOnInput->False], {5476, 0}, Scaled[{0.5, 1}]]},
+   AlignmentPoint->Center,
+   AspectRatio->NCache[2^Rational[-1, 2], 0.7071067811865475],
+   Axes->{False, True},
+   AxesLabel->None,
+   AxesOrigin->Automatic,
+   AxesStyle->{},
+   Background->None,
+   BaseStyle->{},
+   BaselinePosition->Automatic,
+   ColorOutput->Automatic,
+   ContentSelectable->Automatic,
+   CoordinatesToolOptions:>Automatic,
+   DisplayFunction:>$DisplayFunction,
+   Epilog->{},
+   FormatType:>TraditionalForm,
+   Frame->{{True, True}, {False, False}},
+   FrameLabel->{None, 
+     FormBox[
+      RotationBox["\"RCC\"", BoxRotation -> 3.141592653589793], 
+      TraditionalForm]},
+   FrameStyle->{},
+   FrameTicks->Automatic,
+   FrameTicksStyle->{},
+   GridLines->{None, Automatic},
+   GridLinesStyle->RGBColor[0, 1, 0],
+   ImageMargins->0.,
+   ImagePadding->All,
+   ImageSize->1200,
+   ImageSizeRaw->Automatic,
+   LabelStyle->{},
+   Method->Automatic,
+   PlotLabel->None,
+   PlotRange->All,
+   PlotRangeClipping->False,
+   PlotRangePadding->Automatic,
+   PlotRegion->Automatic,
+   PreserveImageOptions->Automatic,
+   Prolog->{},
+   RotateLabel->True,
+   Ticks->Automatic,
+   TicksStyle->{}],
+  BoxRotation->1.5707963267948966`]], "Output",
+ CellChangeTimes->{
+  3.7282826277616253`*^9, 3.728282826449345*^9, 3.728282941091547*^9, 
+   3.72828304983444*^9, 3.728283243906003*^9, 3.728283297353261*^9, 
+   3.728283330746608*^9, 3.728283518444816*^9, {3.728283613674283*^9, 
+   3.72828363815897*^9}, 3.7282838103869963`*^9, 3.728283851219672*^9, {
+   3.728284870466979*^9, 3.728284877070181*^9}, {3.728284989670232*^9, 
+   3.728284997462922*^9}, 3.728285070161955*^9, {3.7282854551515007`*^9, 
+   3.728285514635771*^9}, 3.728285778335614*^9, {3.728285827605359*^9, 
+   3.728285851299285*^9}, 3.7282859027125673`*^9, {3.728286309295138*^9, 
+   3.72828633003211*^9}, {3.728286426679468*^9, 3.728286452886818*^9}, 
+   3.7282864929612637`*^9, {3.72828654949782*^9, 3.728286646114822*^9}, {
+   3.7282866958200903`*^9, 3.728286710622324*^9}, 3.728286768903574*^9, {
+   3.728286891472596*^9, 3.728286934334649*^9}, {3.728287044748459*^9, 
+   3.728287061037703*^9}, {3.728287199609582*^9, 3.728287252314948*^9}, 
+   3.728287701051278*^9, {3.7284586788346443`*^9, 
+   3.728458685066996*^9}},ExpressionUUID->"51b61753-535a-4dfc-92ae-\
+f6a75581ba0c"]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{1432, 809},
+WindowMargins->{{Automatic, 0}, {Automatic, 0}},
+FrontEndVersion->"11.2 for Mac OS X x86 (32-bit, 64-bit Kernel) (September \
+10, 2017)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 326, 5, 98, "Title",ExpressionUUID->"206f3e38-a83d-48fe-987a-c2ec82a15c4c"],
+Cell[CellGroupData[{
+Cell[931, 31, 6414, 153, 388, "Input",ExpressionUUID->"6057b372-a312-478f-8d55-b68c6cd96809"],
+Cell[7348, 186, 53233, 1437, 1253, "Output",ExpressionUUID->"51b61753-535a-4dfc-92ae-f6a75581ba0c"]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+

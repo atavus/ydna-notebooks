@@ -1,2 +1,2 @@
 # ydna-notebooks
-Jupyter notebooks for Y-DNA data analysis
+Jupyter and Mathematica notebooks for Y-DNA data analysis
